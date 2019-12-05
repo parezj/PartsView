@@ -10,7 +10,7 @@ import argparse
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ajax/google.json"
-ocr_api_key = "f15f1595ea88957"
+ocr_api_key = ""
 
 OFFLINE = True
 
@@ -75,7 +75,7 @@ def query(request):
             return response
     except Exception as e: 
         url = "http://octopart.com/api/v3/parts/search"
-        url += "?apikey=548dbd02df0dfc20df42" 
+        url += "?apikey=" 
         url += "&include[]=imagesets"
         ## url += "&include[]=descriptions"
         url += "&include[]=datasheets"
