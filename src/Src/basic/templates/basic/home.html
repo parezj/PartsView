@@ -1,0 +1,290 @@
+{% extends 'basic/base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<script>
+
+	$(document).on('keypress',function(e) {
+    	if(e.which == 13) {
+        	goSearch();
+    	}
+	});
+    
+    //document.addEventListener('scroll', function (event) {
+    //    window.scroll(0, window.pageYOffset)
+    //}, true /*Capture event*/);
+	
+	function Search()
+	{
+        if (uploading == true)
+            Swal.fire({ title: 'Warning', text: 'Uploading to server in progress. Please wait..', icon: 'warning', confirmButtonText: 'OK'});
+        else if (speaking == true)
+            Swal.fire({ title: 'Warning', text: 'Microphone session is active, please end it first.', icon: 'warning', confirmButtonText: 'OK'});
+        else {
+            var part = $("#search").val();
+    		if (part != "")
+    		{
+    			window.location.href = "/search/" + encodeURIComponent(part);
+    		}
+        }     
+	}
+    
+
+    $(window).on('resize', function(){
+        SetInputSearchWidth($(this).width());
+        SetInputPlaceholder($(this).width());
+    });
+    
+    $(window).on('load', function () {
+        SetInputSearchWidth($(this).width());
+        SetInputPlaceholder($(this).width());
+        $("#search_form").fadeIn();
+        $("#search_form").css('display', 'flex');
+        $("#capture").on('change', (e) => CaptureToBlob(e.target.files));
+    });
+    
+    function SetInputSearchWidth(winWidth)
+    {
+        $("#search").css('width',(winWidth * 0.8)-100);
+    }
+    
+    function SetInputPlaceholder(winWidth)
+    {
+        if (winWidth < 850)
+            $("#search").attr("placeholder","..");
+        else 
+            $("#search").attr("placeholder",  "Search for part...");
+    }
+    
+      
+    //const player = document.getElementById('player');
+    var mediaRecorder;
+
+    const handleSuccess = function(stream) {
+        const options = {mimeType: 'audio/webm'};
+        const recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream, options);
+        
+        $("#speech_icon").removeClass('fa-flag2');
+        $("#speech_icon").addClass('fa-flag2-red2');
+        speaking = true;
+        setTimeout(function()
+        { 
+            if (speaking == true)
+            {
+                speaking = false;
+                $("#speech_icon").removeClass('fa-flag2-red2');
+                $("#speech_icon").addClass('fa-flag2');
+                mediaRecorder.stop();
+            }
+        }, 10000);
+    
+        mediaRecorder.addEventListener('dataavailable', function(e) {
+          if (e.data.size > 0) {
+            recordedChunks.push(e.data);
+          }
+        });
+    
+        mediaRecorder.addEventListener('stop', function() {
+            $.LoadingOverlay("show",
+            { 
+                background      : "rgba(0, 0, 0, 0.7)", 
+                fontawesomeColor: "white",
+                image           : "",
+                fontawesome     : "fa fa-cog fa-spin" 
+            });
+            uploading = true;
+            var form = new FormData();
+            form.append("rec", new Blob(recordedChunks), "rec.wav");
+            $.ajax({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                },
+                type: 'POST',
+                url: '/ajax/upload/',
+                data: form,
+                processData: false,  // prevent jQuery from converting the data
+                contentType: false,  // prevent jQuery from overriding content type
+                success: function(response) {
+                    $.LoadingOverlay("hide");
+                    uploading = false;
+                    try {
+                        speech = response["speech"];
+                        if (speech === [] || speech.length == 0)
+                            Swal.fire({ title: 'Speech recognition failed', text: "No spoken word was detected.", icon: 'warning', confirmButtonText: 'OK'});
+                        else {
+                            //alert(">" + speech + "<");
+                            $("#search").val(speech.join(' '));
+                            setTimeout(function()
+                            { 
+                                Search();
+                            }, 500);
+                        }               
+                    } catch(e) {
+                        Swal.fire({ title: 'Error', text: "Connection error. JSON invalid. " + e, icon: 'error', confirmButtonText: 'OK'});
+                    } 
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    $.LoadingOverlay("hide");
+                    uploading = false;
+                    Swal.fire({ title: 'Error', text: textStatus + "\n" + errorThrown, icon: 'error', confirmButtonText: 'OK'}); 
+                } 
+            });  
+        });
+    
+        mediaRecorder.start();
+    };
+    
+    var speaking = false;
+    var uploading = false;
+    
+    function Speech()
+    {
+        if (uploading == true)
+            Swal.fire({ title: 'Warning', text: 'Uploading to server in progress. Please wait..', icon: 'warning', confirmButtonText: 'OK'});
+        else 
+        {
+            if (speaking == true)
+            {
+                speaking = false;
+                $("#speech_icon").removeClass('fa-flag2-red2');
+                $("#speech_icon").addClass('fa-flag2');
+                mediaRecorder.stop();
+            }
+            else
+            {
+                if (typeof MediaRecorder === 'undefined')
+                    Swal.fire({ title: 'API not available', text: 'MediaRecorder API is not available! If you are using old Firefox or Chrome, please ugrade. If you are using Safari, please enable experimental API - MediaRecorder. If you are using Edge or even IE, I am sorry for you :)', icon: 'warning', confirmButtonText: 'OK'});
+                else
+                    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess);      
+            }     
+        }       
+    }
+    
+    function Ocr()
+    {
+        if (uploading == true)
+            Swal.fire({ title: 'Warning', text: 'Uploading to server in progress. Please wait..', icon: 'warning', confirmButtonText: 'OK'});
+        else if (speaking == true)
+            Swal.fire({ title: 'Warning', text: 'Microphone session is active, please end it first.', icon: 'warning', confirmButtonText: 'OK'});
+        else
+        {
+            if (typeof FileReader === 'undefined')
+                Swal.fire({ title: 'API not available', text: 'FileReader API is not available!', icon: 'warning', confirmButtonText: 'OK'});
+            else
+                $("#capture").click();   
+        }
+    }
+    
+    function CaptureToBlob(files)
+    {
+        if (files.length > 0)
+        {    
+            var ext = files[0].type;
+            if (ext == "image/png") ext = ".png";
+            else if (ext == "image/jpeg") ext = ".jpeg";
+            else {
+                Swal.fire({ title: 'Extension not supported', text: ext + " is not supported image format!", icon: 'warning', confirmButtonText: 'OK'});
+                return;
+            }
+            
+            var file = files[0];
+            var fileReader = new FileReader();
+            fileReader.onloadend = function (e) 
+            {
+                try 
+                {
+                    var arrayBuffer = e.target.result;
+                    var fileType = files[0].type;
+                    var blob = blobUtil.arrayBufferToBlob(arrayBuffer, fileType);
+                    //console.log('here is a blob', blob);
+                    //console.log('its size is', blob.size);
+                    //console.log('its type is', blob.type);
+                    UploadCapture(file, blob, ext);
+                }
+                catch(error) {
+                    Swal.fire({ title: 'Error', text: error, icon: 'error', confirmButtonText: 'OK'});
+                }    
+            };
+            fileReader.readAsArrayBuffer(file);
+        }   
+    }
+    
+    function UploadCapture(file, blob, ext)
+    {   
+        uploading = true;
+        var form = new FormData();
+        form.append("capture", blob, "capture" + ext);
+        form.append("ext", ext);
+        $.LoadingOverlay("show",
+        { 
+            background      : "rgba(0, 0, 0, 0.7)", 
+            fontawesomeColor: "white",
+            image           : "",
+            fontawesome     : "fa fa-cog fa-spin" 
+        });
+        
+        $.ajax({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            type: 'POST',
+            url: '/ajax/upload/',
+            data: form,
+            processData: false,  // prevent jQuery from converting the data
+            contentType: false,  // prevent jQuery from overriding content type
+            success: function(response) {
+                uploading = false;
+                $.LoadingOverlay("hide");
+                try {
+                    ocr = JSON.parse(response["ocr"]);
+                    if (ocr["OCRExitCode"] > 2)
+                        Swal.fire({ title: 'OCR failed', text: "No text was found on image.", icon: 'warning', confirmButtonText: 'OK'});
+                    else {
+                        result = ocr["ParsedResults"];
+                        if (result.length > 0 && "ParsedText" in result[0] && (result[0]["ParsedText"]).trim().length > 0)
+                        {
+                            //alert(">" + (result[0])["ParsedText"] + "<");
+                            $("#search").val((result[0])["ParsedText"]);
+                            setTimeout(function()
+                            { 
+                                Search();
+                            }, 500);
+                        }
+                       else 
+                        Swal.fire({ title: 'OCR failed', text: "No text was found on image.", icon: 'warning', confirmButtonText: 'OK'}); 
+                    }               
+                } catch(e) {
+                    Swal.fire({ title: 'Error', text: "Connection error. JSON invalid. " + e, icon: 'error', confirmButtonText: 'OK'});
+                }         
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) 
+            { 
+                $.LoadingOverlay("hide");
+                uploading = false;
+                Swal.fire({ title: 'Error', text: textStatus + "\n" + errorThrown, icon: 'error', confirmButtonText: 'OK'});
+            } 
+        }); 
+    } 
+	
+</script>
+
+<form onsubmit="return false;" id="search_form" style="display:flex;flex-direction:row;position: absolute;top: 40%;opacity:0.8;overflow: auto;padding-left:10%;padding-right:10%;display:none">
+    <input type="text" name="search" list="partlist" id="search" placeholder="Search for part..."  style="flex-grow:2;padding-top:14;padding-bottom:10;padding-left:25;padding-right:25;color:white;background:black;outline: none;border: none !important;font-family: 'SF Display'; font-weight: 400; font-size: 3.2em;"/>
+    <button class="btn btn-secondary" type="submit" onclick="Search();" style="width:100px;border-radius: 0 5px 5px 0">
+        <i class="fa fa-3x fa-search" id="search_icon2"></i>
+    </button>
+    <button class="btn" type="button" onclick="Ocr();" style="position:relative;right:210px;background:transparent;width:100px;">
+        <i class="fa fa-4x fa-camera fa-flag2"></i>
+    </button>
+    <button class="btn" type="button" onclick="Speech();" style="position:relative;right:390px;background:transparent;width:100px;">
+        <i class="fa fa-4x fa-microphone fa-flag2" id="speech_icon"></i>
+    </button>
+</form>
+
+<audio id="player" controls style="display:none"></audio>
+<input id="capture" type="file" accept="image/*" style="display:none">
+
+{% endblock %}

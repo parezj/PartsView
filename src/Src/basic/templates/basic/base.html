@@ -1,0 +1,181 @@
+{% load staticfiles %}
+
+<html lang="cs">
+<head>
+    <title>PartsView</title>
+    <meta http-equiv="Content-Language" content="cs">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Jakub Pařez"> 
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-treeview.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+	
+	<link rel="apple-touch-icon" sizes="57x57" href="{% static 'favicon/apple-icon-57x57.png' %}">
+	<link rel="apple-touch-icon" sizes="60x60" href="{% static 'favicon/apple-icon-60x60.png' %}">
+	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'favicon/apple-icon-72x72.png' %}">
+	<link rel="apple-touch-icon" sizes="76x76" href="{% static 'favicon/apple-icon-76x76.png' %}">
+	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'favicon/apple-icon-114x114.png' %}">
+	<link rel="apple-touch-icon" sizes="120x120" href="{% static 'favicon/apple-icon-120x120.png' %}">
+	<link rel="apple-touch-icon" sizes="144x144" href="{% static 'favicon/apple-icon-144x144.png' %}">
+	<link rel="apple-touch-icon" sizes="152x152" href="{% static 'favicon/apple-icon-152x152.png' %}">
+	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-icon-180x180.png' %}">
+	<link rel="icon" type="image/png" sizes="192x192"  href="{% static 'favicon/android-icon-192x192.png' %}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+	<link rel="icon" type="image/png" sizes="96x96" href="{% static 'favicon/favicon-96x96.png' %}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon/favicon.ico' %}"/>
+	<link rel="manifest" href="{% static 'favicon/manifest.json' %}">
+	<meta name="msapplication-TileColor" content="#ffffff' %}">
+	<meta name="msapplication-TileImage" content="{% static 'favicon/ms-icon-144x144.png' %}">
+	<meta name="theme-color" content="#ffffff' %}">
+
+
+</head>
+
+<body id="background-div">
+    
+    <div class="layer">
+
+        <nav class="navbar navbar-dark navbar-expand-lg fixed-top" style="background-color:rgba(213,213,213, 0.5">
+            <a class="navbar-brand" href="/" >
+            <img src="{% static 'img/logo.png' %}" width="50" height="50" onmouseover="this.src='{% static 'img/logo2.png' %}'" onmouseout="this.src='{% static 'img/logo.png' %}'" style="cursor: default;">
+            </a><span style="opacity:0.7;color: black; cursor: default;font-family: 'SF Display'; font-weight: 500; font-size: 2.0em;" onclick="window.location.href='/'">PartsView</span>
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" style="margin-left: 30px" id="navbarSupportedContent">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'basic:home' %}">
+                        <button type="button" class="btn btn-dark opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 400;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                            <i class="fa fa-search " aria-hidden="true"></i>
+                            Find Part
+                        </button>
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'history:history' %}">
+                        <button type="button" class="btn btn-dark opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                            <i class="fa fa-history" aria-hidden="true"></i>
+                           History
+                        </button>
+                        </a>
+                    </li>
+    				</b><li class="nav-item">
+                        <a class="nav-link" href="{% url 'favourite:favourite' %}">
+                        <button type="button" class="btn btn-dark opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                            <i class="fa fa-heart" aria-hidden="true"></i>
+                            Favourite
+                        </button>
+                        </a>
+                    </li>
+                    {% endif %}    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'api:api' %}">
+                        <button type="button" class="btn btn-dark opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 400;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                            <i class="fa fa-code" aria-hidden="true"></i>
+                            API
+                        </button>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about:about' %}">
+                        <button type="button" class="btn btn-dark opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 400;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                            <i class="fa fa-question-circle" aria-hidden="true"></i>
+                            About
+                        </button>
+                        </a>
+                    </li>				
+                    
+                </ul>
+                <ul class="nav navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <div class="btn-group" role="group">
+                                {% if user.is_superuser %}
+                                    <button type="button" class="btn btn-info opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);" onclick="location.href='/admin/'">
+                                        <i class="fa fa-sliders" aria-hidden="true"></i>
+                                        {{user.username}}
+                                    </button>
+                                 {% elif user.is_staff %}
+                                    <button type="button" class="btn btn-warning nounderline" style="color: black; font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);" disabled>
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        {{user.username}}
+                                    </button>
+                                 {% else %}
+                                    <button type="button" class="btn btn-success nounderline" style="color: black; font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);" disabled>
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        {{user.username}}
+                                    </button>
+                                 {% endif %}
+                                             
+                                 <button type="button" class="btn btn-danger opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);" onclick="location.href='{% url 'logout' %}'">
+                                    <i class="fa fa-power-off fa-lg" aria-hidden="true"></i>
+                                    Odhlásit
+                                 </button>                 
+                            </div> 
+                        </li>
+                    {% else %}
+    				    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">
+                            <button type="button" class="btn btn-info opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                Sign Up
+                            </button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                            <button type="button" class="btn btn-success opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 200;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+                                <i class="fa fa-sign-in" aria-hidden="true"></i>
+                                Log In
+                            </button>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        
+        <script src="{% static 'js/fa.js' %}"></script>
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-treeview.js' %}"></script>
+        <script src="{% static 'js/blob-util.js' %}"></script>
+        <script src="{% static 'js/loadingoverlay.min.js' %}"></script>
+        <script src="{% static 'js/sweetalert.min.js' %}"></script>
+        
+        <script>
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+    
+            var csrftoken = getCookie('csrftoken');
+        </script>         
+        
+        <div class="main" style="margin-bottom: 20px">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+</body>
+
+
+</html>

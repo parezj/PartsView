@@ -1,0 +1,82 @@
+{% extends 'basic/base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<div style="width: 100%;overflow:auto;">
+    <div class="card " style="border: 1px solid #FFF;border-color:gray;margin-right: 10%;margin-left:10%;background-color:rgba(30, 30, 30, 0.8);">
+          <div class="card-header" style="color:white;cursor: default;font-family: 'SF Text'; font-weight: 200; font-size: 1.3em;"> 
+                {% if err %}
+                    <span style="color:red">{{ error }}</span>
+                {% else %}
+                    [{{ now }} / {{ total }}]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search: <span style="font-weight: 500;">{{ searched }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total: <span style="font-weight: 500;">{{ hits }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Query: <span style="font-weight: 500;">{{ msec }}</span> ms
+                {% endif %}
+            </div>
+            
+            <div class="card-body">
+                <div class="container-fluid">
+                    {% for node in parts %}
+                    <div id="grid_row1" onclick="window.location.href='/part/{{searched_enc}}/{{ node.item.mpn}}'" target="_self" class="row part-list" style="cursor:hand;padding:10px;border-radius: 10px;margin-top:5px;margin-bottom:5px;">
+                            
+                                <div class="col-md-1" >
+                                    
+                                    <img src="{{ node.img2 }}" width="75" height="75">
+                                    
+                                </div>
+                                
+                                <div class="col-md-9" >
+                                    
+                                    <b>{{ node.item.mpn }}</b> <br>
+                                    <i>{{ node.item.manufacturer.name }}</i> <br>
+                                    {{ node.snippet }} <br>
+    
+                                </div>
+                                
+                                <div class="col-md-2" >
+                                    
+                                    {% if node.prices2.farnell_mnu == 0 %}
+                                        ? <br>
+                                    {% else %}
+                                        {{ node.prices2.farnell_mnu }} / <b>{{ node.prices2.farnell_eur }}</b> EUR <br>
+                                    {% endif %}
+                                    
+                                    <a href="{{ node.datasheet2 }}" >Datasheet PDF</a>
+                                    <a href="{{ node.item.octopart_url }}" >Octopart.com</a> <br>
+    
+                                </div>
+                           
+                         </div> <!-- row.// -->
+                     {% endfor %}
+                </div>
+            </div>
+                     
+     </div>
+     
+     <nav aria-label="pagiantor" style="margin-top:20px;padding-bottom:50px;"class="layer2">
+         <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+              <li class="page-item"><a class="page-link" href="?page={{parts.previous_page_number}}">Previous</a></li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+            {% for i in parts.paginator.page_range %}
+              {% if parts.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li  class="page-item"><a class="page-link" href="?page={{i}}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if parts.has_next %}
+              <li class="page-item"><a class="page-link" href="?page={{parts.next_page_number}}">Next</a></li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+            
+
+    
+{% endblock %}

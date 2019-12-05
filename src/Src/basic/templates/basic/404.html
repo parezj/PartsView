@@ -1,0 +1,23 @@
+{% extends 'basic/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h1>
+                    Jejda</h1>
+                <h2>
+                    404 Not Found</h2>
+                <div class="error-details">
+                    Omlouváme se, ale stránku nelze zobrazit, protože neexistuje!
+                </div>
+                <div class="error-actions">
+                    <a href="{% url 'basic:home' %}" class="btn btn-primary btn-lg"><span class="fa fa-home"></span>
+                        Přejít domů </a><a href="mailto: parez.jakub@gmail.com" class="btn btn-default btn-lg"><span class="fa fa-envelope"></span> Kontaktuj správce </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
