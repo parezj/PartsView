@@ -1,0 +1,27 @@
+{% extends 'basic/base.html' %}
+
+{% block content %}
+
+<script> 
+    var fail = {{fail}};
+    if (fail == 1)
+    {
+        Swal.fire({ title: "Login failed", text: "Wrong username or password entered.", icon: 'error', confirmButtonText: 'OK'});
+    }
+</script>
+
+<div class="container">
+
+  <form method="post" style="max-width: 330px;padding: 15px;margin: 0 auto;position: fixed;top: 40%; left: 40%;">
+    {% csrf_token %}
+    <!--<h2 class="form-signin-heading">Please sign in</h2>-->
+    <label for="username" class="sr-only">Username</label>
+    <input type="text" style="border:2;border-color:black" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+    <label for="password" class="sr-only">Password</label>
+    <input style="margin-top:5px;border:2;border-color:black" type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+    <button style="margin-top:5px" class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+  </form>
+
+</div>
+    
+{% endblock %}

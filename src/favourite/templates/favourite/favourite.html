@@ -1,0 +1,154 @@
+{% extends 'basic/base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<script>
+
+function favFlush()
+{
+    //$.LoadingOverlay("show",
+    //{ 
+    //    background      : "rgba(0, 0, 0, 0.7)", 
+    //    fontawesomeColor: "white",
+    //    image           : "",
+    //    fontawesome     : "fa fa-cog fa-spin" 
+    //});
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "All your favourite parts will be deleted!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        $.ajax({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            type: 'POST',
+            url: '/ajax/fav-flush/',
+            data: "",
+            success: function(response) {
+                //$.LoadingOverlay("hide");
+                //swalWithBootstrapButtons.fire(
+                //  'Deleted!',
+                //  'Favorite list is now empty.',
+                //  'success'
+                //);
+                window.location.href = "/favourite";
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) 
+            { 
+                //$.LoadingOverlay("hide");
+                var resp = XMLHttpRequest.responseText;
+                try {
+                    resp = (JSON.parse(resp))["error"];
+                }
+                catch(error) {}
+                swalWithBootstrapButtons.fire({ title: errorThrown, text: resp, icon: 'error', confirmButtonText: 'OK'});
+                //window.location.href = "/"      
+            } 
+        }); 
+      } 
+    });
+}
+
+</script>
+
+<div style="width: 100%;overflow:auto;">
+
+
+    <div class="card " style="border: 1px solid #FFF;border-color:gray;margin-right: 10%;margin-left:10%;background-color:rgba(30, 30, 30, 0.8);">
+            <div class="card-header" style="color:white;cursor: default;font-family: 'SF Text'; font-weight: 200; font-size: 1.3em;"> 
+                <div class="row">
+                    <div class="col-md-10">
+                        [{{now}} / {{total}}] Favourite
+                    </div>
+                    <div class="col-md-2">
+                        <a class="nav-link text-right float-right">
+                            <button type="button" class="btn btn-white opacity2 nounderline" onclick="favFlush();" style="font-family: 'SF Text'; font-weight: 400;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);{{ favs_empty_or_not_logged|yesno:"display:none,display:block" }}">
+                                <i class="fa fa-2x fa-trash" ></i>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="card-body">
+                <div class="container-fluid">
+                    {% for node in favs %}
+                    <div id="grid_row1" onclick="window.location.href='/part/{{node.search_enc}}/{{node.name_enc}}?refn=favourite&refp={{favs.number}}'" target="_self" class="row part-list" style="cursor:hand;padding:10px;border-radius: 10px;margin-bottom:5px;">
+                            
+                                <div class="col-md-1" >
+                                    
+                                    <img src="{{ node.img_small }}" width="75" height="75">
+                                    
+                                </div>
+                                
+                                <div class="col-md-9" >
+                                    
+                                    <b>{{ node.name }}</b> ({{ node.search }})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-family: 'SF Text'; font-weight: 200;">{{ node.time|date:'Y-m-d H:i' }}</span><br>
+                                    <i>{{ node.manuf }}</i> <br>
+                                    {{ node.desc }} <br>
+    
+                                </div>
+                                
+                                <div class="col-md-2" >
+                                    
+                                    {% if node.farnell_mnu == 0 %}
+                                        ? <br>
+                                    {% else %}
+                                        {{ node.farnell_mnu }} / <b>{{ node.farnell_czk }}</b> CZK <br>
+                                    {% endif %}
+                                    
+                                    <a href="{{ node.pdf }}" >Datasheet PDF</a>
+                                    <a href="{{ node.octo }}" >Octopart.com</a> <br>
+    
+                                </div>
+                           
+                         </div> <!-- row.// -->
+                     {% endfor %}
+                </div>
+            </div>
+                     
+     </div>
+     
+     <nav aria-label="pagiantor" style="margin-top:20px;padding-bottom:50px;"class="layer2">
+         <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+              <li class="page-item"><a class="page-link" href="?page={{favs.previous_page_number}}">Previous</a></li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+            {% for i in favs.paginator.page_range %}
+              {% if favs.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+              {% else %}
+                <li  class="page-item"><a class="page-link" href="?page={{i}}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if favs.has_next %}
+              <li class="page-item"><a class="page-link" href="?page={{favs.next_page_number}}">Next</a></li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+    
+{% endblock %}

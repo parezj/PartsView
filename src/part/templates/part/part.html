@@ -1,0 +1,173 @@
+{% extends 'basic/base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<script>
+
+var fav = {{ fav|yesno:"1,0" }};
+
+function favControl()
+{
+	var n = '{{ nodeJson }}';
+
+    //$.LoadingOverlay("show",
+    //{ 
+    //    background      : "rgba(0, 0, 0, 0.7)", 
+    //    fontawesomeColor: "white",
+    //    image           : "",
+    //    fontawesome     : "fa fa-cog fa-spin" 
+    //});
+
+    var ctrl = "add";
+    if (fav == 1)
+    	ctrl = "del";
+
+    $.ajax({
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        type: 'POST',
+        url: '/ajax/fav-' + ctrl + '/',
+        data: n,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'text',
+        success: function(response) {
+            //$.LoadingOverlay("hide");
+            if (fav == 1)
+            {
+            	fav = 0;
+            	$("#fav_button").removeClass("btn-danger");
+            	$("#fav_button").addClass("btn-white");
+            	Swal.fire({ title: 'Removed', text: "Successfully removed from favourite list.", icon: 'success', confirmButtonText: 'OK', timer: 2000});
+            }
+            else
+            {
+            	fav = 1;
+            	$("#fav_button").removeClass("btn-white");
+            	$("#fav_button").addClass("btn-danger");
+            	Swal.fire({ title: 'Added', text: "Successfully added to favourite list.", icon: 'success', confirmButtonText: 'OK', timer: 2000});
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) 
+        { 
+            //$.LoadingOverlay("hide");
+            var resp = XMLHttpRequest.responseText;
+            try {
+            	resp = (JSON.parse(resp))["error"];
+            }
+            catch(error) {}
+            Swal.fire({ title: errorThrown, text: resp, icon: 'error', confirmButtonText: 'OK'});
+            //window.location.href = "/"      
+        } 
+    }); 
+}
+
+</script>
+
+<div class="container" style="padding-bottom: 50px">
+  <div class="row">
+    <div class="col-sm-1">
+
+		<a class="nav-link" href="{{backlink}}">
+			<button type="button" class="btn btn-outline-white opacity2 nounderline" style="font-family: 'SF Text'; font-weight: 400;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);">
+			    <i class="fa fa-2x fa-arrow-circle-left"></i>
+			</button>
+		</a>
+		<a class="nav-link">
+			<button type="button" id="fav_button" class="btn {{ fav|yesno:"btn-danger,btn-white" }} opacity2 nounderline" onclick="favControl();" style="font-family: 'SF Text'; font-weight: 400;box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.25);{{ logged|yesno:"display:block,display:none" }}">
+			    <i class="fa fa-2x fa-gratipay"></i>
+			</button>
+		</a>
+
+    </div>
+    <div class="col-sm-10">
+
+		<div class="container" style="border: 0;">
+		    <div class="row" style="padding:10px;border-radius: 10px;margin-top:5px;margin-bottom:5px;background-color:rgba(255, 255, 255, 1.0);border: 1px solid #FFF;border-color:black;">
+		            
+		                <div class="col-md-3" >
+		                    
+		                    <img src="{{ node.img_big }}" style="margin-bottom: 10px"><br>
+		                    <img src="{{ node.img_big2 }}" style="margin-bottom: 10px"><br>
+		                    <img src="{{ node.img_big3 }}" style="margin-bottom: 10px"><br>
+		                    <img src="{{ node.img_big4 }}">
+		                    
+		                </div>
+		                
+		                <div class="col-md-7" >
+		                    
+		                    <span style="font-family: 'SF Display'; font-weight: 600;font-size: 2em">{{ node.item.mpn }}</span> <br>
+		                    <span style="font-family: 'SF Display'; font-weight: 300;font-size: 1.5em"><i>{{ node.item.manufacturer.name }}</span></i> <br><br>
+		                    <span style="font-family: 'SF Text'; font-weight: 300;font-size: 1.1em">{{ node.snippet }} </span><br>
+
+		                    <table class="table table-striped" style="margin-top: 20px">
+							  <thead>
+							    <tr class="text-left">
+							      <th scope="col">Spec</th>
+							      <th scope="col">Value</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							  	{% for spec in node.specs %}
+							    <tr>
+							      <td>{{spec.name}}</td>
+							      <td>{{spec.val}}</td>
+							    </tr>
+							    {% endfor %}
+							  </tbody>
+							</table>
+
+		                </div>
+		                
+		                <div class="col-md-2" >
+
+		                    <span style="font-size:0.8em;text-decoration: underline">Farnell:</span><br>
+		                    {% if node.prices2.farnell_mnu == 0 %}
+		                        ?
+		                    {% else %}
+		                        {{ node.prices2.farnell_mnu }} / <b>{{ node.prices2.farnell_eur }}</b> CZK
+		                    {% endif %}
+							<br><br>
+
+		                    <span style="font-size:0.8em;text-decoration: underline">Mouser:</span><br>
+		                    {% if node.prices2.mouser_mnu == 0 %}
+		                        ?
+		                    {% else %}
+		                        {{ node.prices2.mouser_mnu }} / <b>{{ node.prices2.mouser_eur }}</b> EUR
+		                    {% endif %}
+		                    <br><br>
+
+		                    <span style="font-size:0.8em;text-decoration: underline">Digi-Key:</span><br>
+		                    {% if node.prices2.digikey_mnu == 0 %}
+		                        ?
+		                    {% else %}
+		                        {{ node.prices2.digikey_mnu }} / <b>{{ node.prices2.digikey_usd }}</b> USD
+		                    {% endif %}
+		                    <br><br>
+		                    
+		                    
+		                    {% if node.datasheet2 != "" %}
+		                    <a href="{{ node.datasheet2 }}" ><i class="fa fa-2x fa-file"></i>&nbsp;Datasheet</a>
+		                    {% endif %}
+		                    <a href="{{ node.item.octopart_url }}" >Octopart.com</a> <br>
+
+		                </div>
+		           
+		         </div> <!-- row.// -->
+		</div>
+
+    </div>
+    <div class="col-sm-1">
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+    
+{% endblock %}

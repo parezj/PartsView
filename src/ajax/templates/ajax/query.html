@@ -1,0 +1,47 @@
+{% extends 'basic/base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<script>
+    $.LoadingOverlay("show",
+    { 
+        background      : "rgba(0, 0, 0, 0.7)", 
+        fontawesomeColor: "white",
+        image           : "",
+        fontawesome     : "fa " + fa2 + " fa-spinner fa-spin" 
+    });
+    
+    $.ajax({
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        type: 'POST',
+        url: '/ajax/query/',
+        data:"part={{ part }}",
+        success: function(response) {
+            $.LoadingOverlay("hide");
+            if ("{{ next }}" == "search")
+                window.location.href = "/search/{{ part }}";
+            else if ("{{ next }}" == "part")      
+                window.location.href = "/part/{{ searched }}/{{ part }}";
+            else
+                window.location.href = "/";
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) 
+        { 
+            $.LoadingOverlay("hide");
+            var resp = XMLHttpRequest.responseText;
+            try {
+                resp = (JSON.parse(resp))["error"];
+            }
+            catch(error) {}
+            Swal.fire({ title: errorThrown, text: resp, icon: 'error', confirmButtonText: 'OK'});
+            //window.location.href = "/"      
+        } 
+    }); 
+</script>
+   
+    
+{% endblock %}

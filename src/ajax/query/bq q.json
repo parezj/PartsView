@@ -1,0 +1,59 @@
+{
+    "__class__": "SearchResponse",
+    "facet_results": {
+        "fields": {},
+        "queries": {}
+    },
+    "hits": 1,
+    "msec": 95,
+    "request": {
+        "__class__": "SearchRequest",
+        "facet": {
+            "fields": {},
+            "queries": []
+        },
+        "filter": {
+            "fields": {},
+            "queries": []
+        },
+        "limit": 50,
+        "q": "bq q",
+        "sortby": "score desc",
+        "start": 0,
+        "stats": {}
+    },
+    "results": [
+        {
+            "__class__": "SearchResult",
+            "item": {
+                "__class__": "Part",
+                "brand": {
+                    "__class__": "Brand",
+                    "homepage_url": "http://www.camdenboss.com/",
+                    "name": "Camden Boss",
+                    "uid": "4a238b296a1d9de4"
+                },
+                "cad_models": [],
+                "datasheets": [],
+                "imagesets": [],
+                "manufacturer": {
+                    "__class__": "Manufacturer",
+                    "homepage_url": "http://www.camdenboss.com/",
+                    "name": "Camden Boss",
+                    "uid": "3284f78e16bae143"
+                },
+                "mpn": "28-21085",
+                "octopart_url": "https://octopart.com/28-21085-camden+boss-66557591",
+                "offers": [],
+                "redirected_uids": [],
+                "specs": {},
+                "uid": "3749fdb484b8e88e"
+            },
+            "snippet": "11/4 X 1/4IN Glass Q/blow 250MA Bq 400"
+        }
+    ],
+    "spec_metadata": {},
+    "stats_results": {},
+    "user_country": "CZ",
+    "user_currency": "CZK"
+}
