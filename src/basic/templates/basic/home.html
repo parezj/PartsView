@@ -29,34 +29,7 @@
     			window.location.href = "/search/" + encodeURIComponent(part);
     		}
         }     
-	}
-
-    $(window).on('resize', function(){
-        SetInputSearchWidth($(this).width());
-        SetInputPlaceholder($(this).width());
-    });
-    
-    $(window).on('load', function () {
-        SetInputSearchWidth($(this).width());
-        SetInputPlaceholder($(this).width());
-        $("#search_form").fadeIn();
-        $("#search_form").css('display', 'flex');
-        $("#capture").on('change', (e) => CaptureToBlob(e.target.files));
-    });
-    
-    function SetInputSearchWidth(winWidth)
-    {
-        $("#search").css('width',(winWidth * 0.8)-100);
-    }
-    
-    function SetInputPlaceholder(winWidth)
-    {
-        if (winWidth < 850)
-            $("#search").attr("placeholder","..");
-        else 
-            $("#search").attr("placeholder",  "Search for part...");
-    }
-    
+	}        
       
     //const player = document.getElementById('player');
     var mediaRecorder;
@@ -279,19 +252,78 @@
             } 
         }); 
     } 
+
+    $(window).on('resize', function(){
+        checkPosition($(this).width());
+    });
+    
+    $(window).on('load', function () {
+        checkPosition($(this).width());
+        $("#search_form").css('display', 'flex');
+        $("#search_form").hide();
+        if ($(this).width() < 767)
+            $("#search_form").show();
+        else
+            $("#search_form").fadeIn();
+        $("#capture").on('change', (e) => CaptureToBlob(e.target.files));
+    });
+
+    function checkPosition(winWidth)
+    {
+        if(winWidth < 767)
+        {
+            $("#search").css('width',(winWidth * 0.9)-120);
+            $("#search").attr("placeholder","...");
+
+            $("#input_search").removeClass("fa-3x");
+            $("#input_search").addClass("fa-2x");
+            $("#input_search").css("width", "70px");
+
+            $("#search").css("font-size", "2.2em");
+
+            $("#input_camera").removeClass("fa-4x");
+            $("#input_camera").addClass("fa-3x");
+            $("#input_camera").css("right", "160px");
+
+            $("#input_mic").removeClass("fa-4x");
+            $("#input_mic").addClass("fa-3x");
+            $("#input_mic").css("right", "310px");
+        } 
+        else 
+        {
+            $("#search").css('width',(winWidth * 0.8)-100);
+            $("#search").attr("placeholder",  "Search for part...");
+
+            $("#input_search").removeClass("fa-2x");
+            $("#input_search").addClass("fa-3x");
+            $("#input_search").css("width", "100px");
+
+            $("#search").css("font-size", "3.2em");
+
+            $("#input_camera").removeClass("fa-3x");
+            $("#input_camera").addClass("fa-4x");
+            $("#input_camera").css("right", "210px");
+
+            $("#input_mic").removeClass("fa-3x");
+            $("#input_mic").addClass("fa-4x");
+            $("#input_mic").css("right", "390px");
+        }
+    }
 	
 </script>
 
-<form onsubmit="return false;" id="search_form" style="display:flex;flex-direction:row;position: absolute;top: 40%;opacity:0.8;overflow: auto;padding-left:10%;padding-right:10%;display:none">
+<noscript><p style="color:white;font-family: 'SF Display'; font-weight: 400; font-size: 5.0em;">Please enable JavaScript!</p></noscript>
+
+<form onsubmit="return false;" id="search_form" style="display:none;flex-direction:row;position: absolute;top: 40%;opacity:0.8;overflow: auto;padding-left:10%;padding-right:10%;display:none">
     <input type="text" name="search" list="partlist" id="search" placeholder="Search for part..."  style="flex-grow:2;padding-top:14;padding-bottom:10;padding-left:25;padding-right:25;color:white;background:black;outline: none;border: none !important;font-family: 'SF Display'; font-weight: 400; font-size: 3.2em;"/>
-    <button class="btn btn-secondary" type="submit" onclick="Search();" style="width:100px;border-radius: 0 5px 5px 0">
-        <i class="fa fa-3x fa-search" id="search_icon2" ></i>
+    <button id="input_search" class="btn btn-secondary" type="submit" onclick="Search();" style="width:100px;border-radius: 0 5px 5px 0">
+        <i class="fa fa-search" id="search_icon2" ></i>
     </button>
-    <button class="btn" type="button" onclick="Ocr();" style="position:relative;right:210px;background:transparent;width:100px;">
-        <i class="fa fa-4x fa-camera fa-flag2"></i>
+    <button id="input_camera" class="btn" type="button" onclick="Ocr();" style="position:relative;right:210px;background:transparent;width:100px;">
+        <i class="fa fa-camera fa-flag2"></i>
     </button>
-    <button class="btn" type="button" onclick="Speech();" style="position:relative;right:390px;background:transparent;width:100px;">
-        <i class="fa fa-4x fa-microphone fa-flag2" id="speech_icon"></i>
+    <button id="input_mic" class="btn" type="button" onclick="Speech();" style="position:relative;right:390px;background:transparent;width:100px;">
+        <i class="fa fa-microphone fa-flag2" id="speech_icon"></i>
     </button>
 </form>
 

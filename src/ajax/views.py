@@ -9,14 +9,14 @@ import argparse
 from django.conf import settings
 import os
 import logging
-#from pydub import AudioSegment
+import wave
 
 from basic.models import HistoryPart, FavouritePart
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "XXX"
-ocr_api_key = "XXX"
-octopart_api_key = "XXX"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = settings.AJAX_PATH + "google.json"
+ocr_api_key = "f15f1595ea88957"
+octopart_api_key = "548dbd02df0dfc20df42"
 
 OFFLINE = settings.OFFLINE
 
@@ -36,8 +36,9 @@ def upload(request):
             with open(foo, 'wb+') as destination:
                 for chunk in f.chunks():
                     destination.write(chunk)
-       
-            text = transcribe_file(foo)         
+            with wave.open(foo, "rb") as wave_file:
+                frame_rate = wave_file.getframerate()
+            text = transcribe_file(foo, frame_rate)         
             response = JsonResponse({"speech": text})
             response.status_code = 200
             return response
@@ -235,7 +236,7 @@ def ocr_space_file(filename, overlay=False, api_key='helloworld', language='eng'
         return r.content.decode()
         
 # [START speech_transcribe_sync]
-def transcribe_file(speech_file):
+def transcribe_file(speech_file, frame_rate):
     """Transcribe the given audio file."""
     from google.cloud import speech
     from google.cloud.speech import enums
@@ -251,7 +252,7 @@ def transcribe_file(speech_file):
     audio = types.RecognitionAudio(content=content)
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=44100,
+        sample_rate_hertz=frame_rate,
         language_code='en-US')
     # [END speech_python_migration_config]
 

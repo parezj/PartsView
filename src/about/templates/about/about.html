@@ -4,34 +4,72 @@
 
 {% block content %}
 
+<script>
+	$(window).on('resize', function(){
+        checkPosition($(this).width());
+    });
+    
+    $(window).on('load', function () {
+        checkPosition($(this).width());
+    });
+
+    function checkPosition(winWidth)
+    {
+        if(winWidth < 900)
+        {
+            $("#image").css("max-width", "80px");
+            $("#mainheader").css("font-size", "3.0em");
+            $("#subheader").css("font-size", "1.8em");
+            $("#subtext").css("font-size", "0.8em");
+            $("#logo11").css("max-width", "70px");
+            $("#logo12").css("max-width", "70px");
+            $("#logo13").css("max-width", "70px");
+            $("#logo11").css("margin-top", "10");
+            $("#logo12").css("margin-top", "10");
+        }
+        else
+        {
+            $("#image").css("max-width", "130px");
+            $("#mainheader").css("font-size", "8.0em");
+            $("#subheader").css("font-size", "3.5em");
+            $("#subtext").css("font-size", "1.4em");
+            $("#logo11").css("max-width", "100%");
+            $("#logo12").css("max-width", "100%");
+            $("#logo13").css("max-width", "100%");
+            $("#logo11").css("margin-top", "30");
+            $("#logo12").css("margin-top", "35");
+        }
+    }
+</script>
+
 	<div class="container">
 		<div class="row align-items-center">
-			<div class="col-md-1">
+			<div class="col-1">
 			</div>
-			<div class="col-md-10 text-center">
+			<div class="col-10 text-center">
 			    <div class="card border-dark" style="opacity: 0.85;margin: 0 auto; float: none;margin-top:50px">
 			      <div class="card-header " style="vertical-align: middle;">
 			        <p class="text-center" style="margin: 0; padding: 0">
-			            <h1 style="font-family: 'SF Display'; font-weight: 600; font-size: 8.0em;cursor:default">
-			            <img src="{% static 'img/logo2.png' %}" style="max-width: 130px">
+			            <h1 id="mainheader" style="font-family: 'SF Display'; font-weight: 600; font-size: 8.0em;cursor:default">
+			            <img id="image" src="{% static 'img/logo2.png' %}" style="max-width: 130px">
 			         	PartsView</h1>
 			        </p>
 			      </div> 
 			      <div class="card-body">
-			        <h3 style="font-family: 'SF Display'; font-weight: 200; font-size: 3.5em;cursor:default">
+			        <h3 id="subheader" style="font-family: 'SF Display'; font-weight: 200; font-size: 3.5em;cursor:default">
 			    	Electronics part search assistant</h3>
 			        <div class="dropdown-divider"></div>
-				        <p style="font-family: 'SF Text'; font-weight: 200; font-size: 1.4em;cursor:default">APIs used from Octopart, OCR Space, Google Speech-to-Text and MediaStream,<br> 
+				        <p id="subtext" style="font-family: 'SF Text'; font-weight: 200; font-size: 1.4em;cursor:default">APIs used from Octopart, OCR Space, Google Speech-to-Text and MediaStream,<br> 
 							written in Python 3 in Django 2 framework with JS frontend.</p>
 						<div class="row">
-				            <div class="col-md-4" style="text-align: center;">
-				                <a href="https://www.octopart.com" target="_blank"><img src="{% static 'img/octopart.svg' %}" style="margin-top:30px;max-width:100%;max-height:100%;"></a>
+				            <div class="col-4" style="text-align: center;">
+				                <a href="https://www.octopart.com" target="_blank"><img id="logo11" src="{% static 'img/octopart.svg' %}" style="margin-top:30px;max-width:100%;max-height:100%;"></a>
 				            </div>
-							<div class="col-md-4" style="text-align: center;">
-				                <a href="https://www.ocr.space" target="_blank"><img src="{% static 'img/ocr_space.png' %}" style="margin-top:35px;max-width:100%;max-height:100%;"></a>
+							<div class="col-4" style="text-align: center;">
+				                <a href="https://www.ocr.space" target="_blank"><img id="logo12" src="{% static 'img/ocr_space.png' %}" style="margin-top:35px;max-width:100%;max-height:100%;"></a>
 				            </div>
-							<div class="col-md-4" style="text-align: center;">
-				                <a href="https://www.google.com" target="_blank"><img src="{% static 'img/google.png' %}" style=";max-width:100%;max-height:100%;"></a>
+							<div class="col-4" style="text-align: center;">
+				                <a href="https://www.google.com" target="_blank"><img id="logo13" src="{% static 'img/google.png' %}" style=";max-width:100%;max-height:100%;"></a>
 				            </div>
 				        </div>
 			        </div>                
@@ -43,7 +81,7 @@
 			      </div>  
 			    </div>
 			</div>
-			<div class="col-md-1">
+			<div class="col-1">
 			</div>
 		</div>
 	</div>
