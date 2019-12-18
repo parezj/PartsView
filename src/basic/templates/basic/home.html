@@ -137,7 +137,10 @@
                 if (MediaRecorder.notSupported)
                     Swal.fire({ title: 'API not available', text: 'MediaRecorder API is not available! If you are using old Firefox or Chrome, please ugrade. If you are using Safari, please enable experimental API - MediaRecorder. If you are using Edge or even IE, I am sorry for you :)', icon: 'warning', confirmButtonText: 'OK'});
                 else
-                    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess);      
+                    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess).catch((err)=>
+                        {
+                             Swal.fire({ title: 'No microphone', text: 'Please allow or connect microphone before clicking this button.', icon: 'warning', confirmButtonText: 'OK'});
+                    });    
             }     
         }       
     }

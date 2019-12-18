@@ -8,10 +8,35 @@
 var offline = (("{{offline}}" == "True") ? true : false);
 if (offline == true)
     Swal.fire({ title: 'Warning', text: 'Search query is in offline mode (debug)<br>showing only cached results.', icon: 'warning', confirmButtonText: 'OK', timer: 5000});
+
+    $(window).on('resize', function(){
+        checkPosition3($(this).width());
+    });
+    
+    $(window).on('load', function () {
+        checkPosition3($(this).width());
+    });
+
+    function checkPosition3(winWidth)
+    {
+        if(winWidth < 767)
+        {
+            $(".grid_row1c").css('border-radius',"1px");
+            $("#main_card").css('margin-right',"5px");
+            $("#main_card").css('margin-left',"5px");
+        } 
+        else 
+        {
+            $(".grid_row1c").css('border-radius',"10px");
+            $("#main_card").css('margin-right',"10%");
+            $("#main_card").css('margin-left',"10%");
+        }
+    }
+
 </script>
 
 <div style="width: 100%;overflow:auto;">
-    <div class="card " style="border: 1px solid #FFF;border-color:gray;margin-right: 10%;margin-left:10%;background-color:rgba(30, 30, 30, 0.8);">
+    <div class="card " id="main_card" style="border: 1px solid #FFF;border-color:gray;margin-right: 10%;margin-left:10%;background-color:rgba(30, 30, 30, 0.8);">
           <div class="card-header" style="color:white;cursor: default;font-family: 'SF Text'; font-weight: 200; font-size: 1.3em;"> 
                 {% if err %}
                     <span style="color:red">{{ error }}</span>
@@ -22,10 +47,12 @@ if (offline == true)
             
             <div class="card-body">
                 <div class="container-fluid">
+                    <div class="row">
                     {% for node in parts %}
-                    <div id="grid_row1" onclick="window.location.href='/part/{{searched_enc}}/{{node.name_enc}}?refp={{parts.number}}'" target="_self" class="row part-list" style="cursor:pointer;padding:10px;border-radius: 10px;margin-top:5px;margin-bottom:5px;">
+                    <div class="col-6 col-md-12">
+                    <div id="grid_row1" onclick="window.location.href='/part/{{searched_enc}}/{{node.name_enc}}?refp={{parts.number}}'" target="_self" class="row part-list grid_row1c" style="cursor:pointer;padding:10px;border-radius: 10px;margin-top:5px;margin-bottom:5px;">
                             
-                                <div class="col-md-1" >
+                                <div class="col-md-1 text-center" >
                                     
                                     <img src="{{ node.img_small }}" width="75" height="75">
                                     
@@ -53,7 +80,9 @@ if (offline == true)
                                 </div>
                            
                          </div> <!-- row.// -->
+                     </div> 
                      {% endfor %}
+                     </div>
                 </div>
             </div>
                      

@@ -8,11 +8,30 @@
     {
         Swal.fire({ title: "Login failed", text: "Wrong username or password entered.", icon: 'error', confirmButtonText: 'OK'});
     }
+    $(window).on('resize', function(){
+        checkPosition4($(this).width());
+    });
+    
+    $(window).on('load', function () {
+        checkPosition4($(this).width());
+    });
+
+    function checkPosition4(winWidth)
+    {
+        if(winWidth < 767)
+        {
+            $("#form_login").css('left',"25%");
+        } 
+        else 
+        {
+            $("#form_login").css('left',"40%");
+        }
+    }
 </script>
 
 <div class="container">
 
-  <form method="post" style="max-width: 330px;padding: 15px;margin: 0 auto;position: fixed;top: 40%; left: 40%;">
+  <form method="post" id="form_login" style="max-width: 330px;padding: 15px;margin: 0 auto;position: fixed;top: 40%; left: 40%;">
     {% csrf_token %}
     <!--<h2 class="form-signin-heading">Please sign in</h2>-->
     <label for="username" class="sr-only">Username</label>

@@ -8,9 +8,30 @@
     {
         Swal.fire({ title: "Registration failed", text: "Declared rules were not met.", icon: 'error', confirmButtonText: 'OK'});
     }
+    $(window).on('resize', function(){
+        checkPosition5($(this).width());
+    });
+    
+    $(window).on('load', function () {
+        checkPosition5($(this).width());
+    });
+
+    function checkPosition5(winWidth)
+    {
+        if(winWidth < 767)
+        {
+            $("#form_reg").css('left',"25%");
+            $("#reg_tips").css('left',"12%");
+        } 
+        else 
+        {
+            $("#form_reg").css('left',"40%");
+            $("#reg_tips").css('left',"35%");
+        }
+    }
 </script>
 
-  <form method="post" style="max-width: 330px;padding: 15px;margin: 0 auto;position: fixed;top: 40%; left: 40%;">
+  <form method="post" id="form_reg" style="max-width: 330px;padding: 15px;margin: 0 auto;position: fixed;top: 40%; left: 40%;">
     {% csrf_token %}
     <label for="username" class="sr-only">Username</label>
     <input type="text" style="border:2;border-color:black" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
@@ -21,7 +42,7 @@
     <button style="margin-top:5px" class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
 </form>
 
-<div style="margin: 0 auto;position: fixed;top: 70%; left: 35%;">
+<div id="reg_tips" style="margin: 0 auto;position: fixed;top: 70%; left: 35%;">
 	<ul>
 		<li><small style="color: white;text-shadow: 3px 2px 4px #000000;">Your password can't be too similar to your other personal information.</small></li>
 		<li><small style="color: white;text-shadow: 3px 2px 4px #000000;">Your password must contain at least 8 characters.</small>
