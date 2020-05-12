@@ -9,5 +9,4 @@ src/static/js/* linguist-vendored=true
 src/static/favicon/* linguist-vendored=true
 src/static/fonts/* linguist-vendored=true
 
-*.js linguist-detectable=true
-*.html linguist-detectable=true
+* linguist-language=Python
