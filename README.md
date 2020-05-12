@@ -1,4 +1,4 @@
-# PartsView - Electronic Parts Search Assistant [CTU/VIA]
+# PartsView - Electronic Parts Search Assistant
 
 Link: https://parezj.pythonanywhere.com
 
