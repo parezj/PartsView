@@ -1,12 +1,13 @@
-src/static/css/* linguist-vendored
-src/static/drf-yasg/redoc-old/* linguist-vendored
-src/static/drf-yasg/redoc/* linguist-vendored
-src/static/drf-yasg/swagger-ui-dist/* linguist-vendored
-src/static/drf-yasg/* linguist-vendored
-src/static/css/* linguist-vendored
-src/static/js/* linguist-vendored
-src/static/favicon/* linguist-vendored
-src/static/fonts/* linguist-vendored
+src/static/* linguist-vendored=true
+src/static/css/* linguist-vendored=true
+src/static/drf-yasg/redoc-old/* linguist-vendored=true
+src/static/drf-yasg/redoc/* linguist-vendored=true
+src/static/drf-yasg/swagger-ui-dist/* linguist-vendored=true
+src/static/drf-yasg/* linguist-vendored=true
+src/static/css/* linguist-vendored=true
+src/static/js/* linguist-vendored=true
+src/static/favicon/* linguist-vendored=true
+src/static/fonts/* linguist-vendored=true
 
 *.js linguist-detectable=true
 *.html linguist-detectable=true
